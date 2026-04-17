@@ -1,0 +1,198 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Scarab | Combat Protocol Hub</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <style>
+        body { background-color: #020617; color: #f8fafc; font-family: 'Inter', sans-serif; overflow-x: hidden; }
+        .grid-bg { background-image: radial-gradient(#1e293b 1px, transparent 1px); background-size: 30px 30px; }
+        .card { background: rgba(15, 23, 42, 0.98); border: 1px solid #1e293b; padding: 2.5rem; border-radius: 2rem; margin-bottom: 3rem; position: relative; }
+        .sim-board { height: 450px; background: #05070a; border: 2px solid #1e293b; border-radius: 1.5rem; position: relative; overflow: hidden; box-shadow: inset 0 0 80px rgba(0,0,0,0.9); }
+        
+        /* Tactical Elements */
+        .unit { position: absolute; border-radius: 8px; z-index: 20; display: flex; align-items: center; justify-content: center; font-weight: 900; font-size: 10px; text-align: center; text-transform: uppercase; }
+        .ball { position: absolute; border: 2px dashed rgba(59, 130, 246, 0.4); border-radius: 50%; display: flex; align-items: center; justify-content: center; pointer-events: none; }
+        .label-text { position: absolute; width: 180px; text-align: center; font-family: monospace; font-size: 10px; font-weight: bold; text-transform: uppercase; letter-spacing: 1px; }
+        .dot { position: absolute; width: 10px; height: 10px; border-radius: 50%; z-index: 5; transition: all 2s linear; }
+        
+        /* HUD & Effects */
+        .status-badge { background: #ef4444; color: white; padding: 2px 8px; border-radius: 4px; font-size: 9px; font-weight: 900; position: absolute; top: -10px; left: 20px; }
+        @keyframes strike-R { from { transform: translateX(0); } to { transform: translateX(25px); } }
+        @keyframes strike-L { from { transform: translateX(0); } to { transform: translateX(-25px); } }
+        
+        .rage-bar { position: absolute; bottom: -12px; left: 0; width: 100%; height: 5px; background: #334155; border-radius: 2px; }
+        .rage-fill { height: 100%; background: #ef4444; animation: rage-loop 4s infinite linear; }
+        @keyframes rage-loop { 0% { width: 0%; } 85% { width: 100%; background: #ff0000; box-shadow: 0 0 10px #ff0000; } 100% { width: 100%; } }
+    </style>
+</head>
+<body class="grid-bg min-h-screen p-4 md:p-12">
+
+    <header class="max-w-6xl mx-auto mb-16 flex justify-between items-end border-b border-slate-800 pb-8">
+        <div>
+            <h1 class="text-5xl font-black italic uppercase text-white tracking-tighter">Combat <span class="text-red-600">Manual</span></h1>
+            <p class="text-slate-500 font-mono text-xs mt-2 uppercase tracking-[0.4em]">Strategic Operations Dashboard // Scarab Internal</p>
+        </div>
+        <div class="hidden md:block text-right font-mono text-[10px] text-slate-600">
+            <p>ENCRYPTION: ACTIVE</p>
+            <p>VERSION: 4.0.2</p>
+        </div>
+    </header>
+
+    <main class="max-w-6xl mx-auto">
+
+        <section class="card" style="border-left: 8px solid #3b82f6;">
+            <div class="status-badge bg-blue-600">OFFENSIVE PROTOCOL</div>
+            <div class="mb-8">
+                <h2 class="text-4xl font-black italic uppercase">Scenario 01: We Are Rallying</h2>
+                <p class="text-blue-400 font-bold uppercase text-xs tracking-widest mt-1 italic">Objective: Reinforcement Denial & Rapid Flag Burn</p>
+            </div>
+
+            <div class="sim-board" id="board-1">
+                <div class="unit" style="right: 5%; top: 35%; width: 100px; height: 100px; background: #450a0a; border: 3px solid #ef4444; color: #ef4444; box-shadow: 0 0 30px rgba(239, 68, 68, 0.3);">TARGET<br>FLAG</div>
+                <div class="unit" style="right: 25%; top: 43%; width: 55px; height: 55px; background: #1e40af; border: 2px solid #3b82f6; animation: strike-R 0.6s infinite alternate;">RALLY</div>
+                
+                <div class="ball" style="width: 190px; height: 190px; right: 2%; top: 12%; background: rgba(59, 130, 246, 0.1); border-color: #3b82f6;">
+                    <div class="label-text" style="color:#3b82f6; top:-30px;">Ball 1: Forward Screen<br><span class="font-normal opacity-60">Intercept Zone</span></div>
+                </div>
+                <div class="ball" style="width: 140px; height: 140px; right: 38%; top: 35%; background: rgba(245, 158, 11, 0.1); border-color: #f59e0b;">
+                    <div class="label-text" style="color:#f59e0b; top:-30px;">Ball 2: Buffer Zone<br><span class="font-normal opacity-60">Refill Staging</span></div>
+                </div>
+            </div>
+
+            <div class="grid md:grid-cols-3 gap-6 mt-10 text-xs">
+                <div class="p-6 bg-slate-900/50 rounded-2xl border border-slate-800">
+                    <h4 class="text-blue-400 font-black uppercase mb-3 border-b border-slate-700 pb-2">Orders</h4>
+                    <ul class="space-y-2 text-slate-300">
+                        <li>• Form a <strong class="text-white">BIG TIGHT BALL</strong> immediately.</li>
+                        <li>• <strong>CLEAR FIELD</strong>: Push enemy back past their own structures.</li>
+                        <li>• Do NOT let enemies touch the flag radius.</li>
+                    </ul>
+                </div>
+                <div class="p-6 bg-slate-900/50 rounded-2xl border border-slate-800">
+                    <h4 class="text-amber-500 font-black uppercase mb-3 border-b border-slate-700 pb-2">Execution</h4>
+                    <ul class="space-y-2 text-slate-300">
+                        <li>• <strong>60-70% Field</strong>: Constant swarming in Ball 1.</li>
+                        <li>• <strong>30-40% Filling</strong>: Instant refills from Ball 2.</li>
+                        <li>• Send <strong>Correct Troop Type</strong> ONLY.</li>
+                    </ul>
+                </div>
+                <div class="p-6 bg-red-950/20 rounded-2xl border border-red-900/50">
+                    <h4 class="text-red-500 font-black uppercase mb-3 border-b border-red-900/50 pb-2">Critical Warnings</h4>
+                    <p class="text-slate-300">DO NOT all go fill -> we lose field = rally dies. Stay within your designated ball. Chasing is a kickable offense.</p>
+                </div>
+            </div>
+        </section>
+
+        <section class="card" style="border-left: 8px solid #ef4444;">
+            <div class="status-badge bg-red-600">DEFENSIVE PROTOCOL</div>
+            <div class="mb-8">
+                <h2 class="text-4xl font-black italic uppercase text-white">Scenario 02: We Are Being Rallied</h2>
+                <p class="text-red-500 font-bold uppercase text-xs tracking-widest mt-1 italic">Objective: Structure Integrity & Rally Neutralization</p>
+            </div>
+
+            <div class="sim-board" id="board-2">
+                <div class="unit" style="left: 5%; top: 35%; width: 110px; height: 110px; background: #1e293b; border: 3px solid #3b82f6; box-shadow: 0 0 30px rgba(59, 130, 246, 0.2);">OUR FLAG</div>
+                <div class="unit" style="left: 30%; top: 43%; width: 60px; height: 60px; background: #450a0a; border: 2px solid #ef4444; animation: strike-L 0.6s infinite alternate;">
+                    ENEMY RALLY
+                    <div class="rage-bar"><div class="rage-fill"></div></div>
+                </div>
+                <div class="unit" style="left: 48%; top: 45%; width: 45px; height: 45px; background: #064e3b; border: 2px solid #10b981; border-radius: 50%; animation: strike-L 0.4s infinite alternate;">COUNTER</div>
+                <div class="ball" style="width: 280px; height: 280px; left: -5%; top: 18%; background: rgba(59, 130, 246, 0.15); border-color: #3b82f6;">
+                    <div class="label-text" style="color:#3b82f6; top:-30px; width: 280px;">DEFENSIVE TIGHT BALL<br><span class="font-normal opacity-60">Structure Protection Zone</span></div>
+                </div>
+            </div>
+
+            <div class="grid md:grid-cols-3 gap-6 mt-10 text-xs">
+                <div class="p-6 bg-slate-900/50 rounded-2xl border border-slate-800">
+                    <h4 class="text-blue-400 font-black uppercase mb-3 border-b border-slate-700 pb-2">Strategy</h4>
+                    <p class="text-slate-400 leading-relaxed">Form a <strong>TIGHT BALL</strong> around the structure. Focus on clearing the enemy field first to prevent them from swarming our garrison.</p>
+                </div>
+                <div class="p-6 bg-slate-900/50 rounded-2xl border border-slate-800">
+                    <h4 class="text-amber-500 font-black uppercase mb-3 border-b border-slate-700 pb-2">Rage Timing</h4>
+                    <p class="text-slate-400 leading-relaxed">Watch the enemy rally lead. <strong>Only reinforce</strong> when their rage skill is DOWN. Entering during a skill burst causes massive avoidable deaths.</p>
+                </div>
+                <div class="p-6 bg-red-950/20 rounded-2xl border border-red-900/50">
+                    <h4 class="text-red-500 font-black uppercase mb-3 border-b border-red-900/50 pb-2">Forbidden</h4>
+                    <p class="text-slate-300">No solo swarming the enemy rally. No overextending beyond the territory line. Hold the line at all costs.</p>
+                </div>
+            </div>
+        </section>
+
+        <section class="card" style="border-left: 8px solid #94a3b8;">
+            <div class="status-badge bg-slate-600">STALL PROTOCOL</div>
+            <div class="mb-8">
+                <h2 class="text-4xl font-black italic uppercase text-white">Scenario 03: Downtime</h2>
+                <p class="text-slate-400 font-bold uppercase text-xs tracking-widest mt-1 italic">Objective: Survival & Time Management</p>
+            </div>
+
+            <div class="sim-board" id="board-3">
+                <div class="unit" style="left: 5%; top: 35%; width: 100px; height: 100px; background: #0f172a; border: 3px solid #64748b; color: #64748b;">STALL<br>FLAG</div>
+                <div class="unit" style="left: 18%; top: 25%; width: 35px; height: 35px; background: #1e293b; border: 1px solid #3b82f6; border-radius: 4px; font-size: 8px;">CITY</div>
+                <div class="unit" style="left: 18%; top: 60%; width: 35px; height: 35px; background: #1e293b; border: 1px solid #3b82f6; border-radius: 4px; font-size: 8px;">CITY</div>
+                <div class="ball" style="width: 150px; height: 150px; left: 10%; top: 30%; background: rgba(148, 163, 184, 0.1); border-color: #94a3b8;">
+                    <div class="label-text" style="color:#94a3b8; bottom:-30px; width: 150px;">STALL BALL</div>
+                </div>
+                <div style="position: absolute; left: 38%; top: 0; bottom: 0; width: 2px; background: repeating-linear-gradient(to bottom, #3b82f6 0 10px, transparent 10px 20px); opacity: 0.4;">
+                    <div class="label-text" style="transform: rotate(90deg); left:-65px; top: 20px; color:#3b82f6;">Safety Line</div>
+                </div>
+            </div>
+
+            <div class="grid md:grid-cols-3 gap-6 mt-10 text-xs">
+                <div class="p-6 bg-slate-900/50 rounded-2xl border border-slate-800">
+                    <h4 class="text-blue-400 font-black uppercase mb-3 border-b border-slate-700 pb-2">City Hopping</h4>
+                    <p class="text-slate-400">Cities MUST be moved close to the objective. Long marches are too slow to sustain the garrison under heavy pressure.</p>
+                </div>
+                <div class="p-6 bg-slate-900/50 rounded-2xl border border-slate-800">
+                    <h4 class="text-amber-500 font-black uppercase mb-3 border-b border-slate-700 pb-2">Delaying Tactics</h4>
+                    <p class="text-slate-400">Push only when safe. Your goal is to buy minutes, not win the fight. Stay inside the safety line at all times.</p>
+                </div>
+                <div class="p-6 bg-slate-800/40 rounded-2xl border border-slate-700">
+                    <h4 class="text-white font-black uppercase mb-3 border-b border-slate-600 pb-2">End Goal</h4>
+                    <p class="text-slate-300">Stall until Uptime players return. Every second the flag stands is a win for the organization.</p>
+                </div>
+            </div>
+        </section>
+
+    </main>
+
+    <footer class="mt-20 text-center opacity-30 pb-10">
+        <p class="text-[10px] font-mono tracking-[0.5em] uppercase">Scarab Security Systems // Internal Manual</p>
+    </footer>
+
+    <script>
+        function spawnDot(boardId, color, startX, startY, targetX, targetY, duration) {
+            const board = document.getElementById(boardId);
+            const d = document.createElement('div');
+            d.className = 'dot';
+            d.style.backgroundColor = color;
+            d.style.boxShadow = `0 0 10px ${color}`;
+            d.style.left = startX + '%';
+            d.style.top = startY + '%';
+            board.appendChild(d);
+
+            setTimeout(() => {
+                d.style.transition = `all ${duration}s linear`;
+                d.style.left = targetX + '%';
+                d.style.top = targetY + '%';
+                setTimeout(() => {
+                    d.style.transform = 'scale(3)';
+                    d.style.opacity = '0';
+                    setTimeout(() => d.remove(), 400);
+                }, duration * 600);
+            }, 50);
+        }
+
+        // Scenario 1: Enemy Reinforcement Denial
+        setInterval(() => spawnDot('board-1', '#ef4444', 98, Math.random()*80+10, 78, 45, 2), 650);
+        
+        // Scenario 2: Enemy Field Support
+        setInterval(() => spawnDot('board-2', '#ef4444', 60, Math.random()*100, 20, 50, 2), 850);
+        
+        // Scenario 3: Downtime Support & Pressure
+        setInterval(() => spawnDot('board-3', '#3b82f6', 18, Math.random()>0.5?25:60, 8, 45, 0.7), 1600); // City Refill
+        setInterval(() => spawnDot('board-3', '#ef4444', 90, Math.random()*100, 45, 50, 2.5), 1100); // Enemy pressure
+    </script>
+</body>
+</html>
